@@ -22,7 +22,7 @@ contract GerdaCoin is ERC20 {
         require(msg.value >= 10 ** 6,"Insufficient Ether sent");
         require(msg.value > 0, "Insufficient Ether sent"); // Проверяем, что отправлено достаточное количество эфиров
         // uint tokensAmount = msg.value / priceGerda;
-        uint tokensAmount = (msg.value * 10 ** 12) / priceGerda;
+        uint tokensAmount = (msg.value / 10 ** 12) / priceGerda;
         payable(msg.sender).transfer(msg.value % priceGerda); //отправляем обратно излишние средства
         transferGerdaCoin(address(this), msg.sender, tokensAmount); // 
     }
