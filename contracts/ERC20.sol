@@ -6,25 +6,25 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract GerdaCoin is ERC20 {
     uint64 constant public priceGerda = 1 ether; //цена токена в ether
     constructor() ERC20("GerdaCoin", "GERDA") {
-        uint _totalSupply = 100000 * 10 ** 12; // 100 000 tokens gerda
+        uint _totalSupply = 100000 * 10 ** decimals(); // 100 000 tokens gerda
         _mint(address(this), _totalSupply); // банк GERDA составит 10 000 000
     }
     //показать баланс токена
     function balanceGerdaCoin(address _adr) public view returns(uint balanceGERDA) { 
-        balanceGERDA = balanceOf(_adr) / 10 ** 12 ;
+        balanceGERDA = balanceOf(_adr);
     }   
 
     function transferGerdaCoin(address _from, address _to, uint _value) public { // перевод токена
         _transfer(_from, _to, _value); 
     }
 
-    function buyToken() public payable {
-        require(msg.value >= 10 ** 6,"Insufficient Ether sent");
-        require(msg.value > 0, "Insufficient Ether sent"); // Проверяем, что отправлено достаточное количество эфиров
-        // uint tokensAmount = msg.value / priceGerda;
-        uint tokensAmount = (msg.value / 10 ** 12) / priceGerda;
-        payable(msg.sender).transfer(msg.value % priceGerda); //отправляем обратно излишние средства
-        transferGerdaCoin(address(this), msg.sender, tokensAmount); // 
+    function buyGerda() public payable {
+        require(msg.value >= 10 **(18 - decimals()),"Insufficient Ether sent");
+        uint ost = msg.value % 10**(18 - decimals());
+        uint amountToken = (msg.value - ost) / (priceGerda / 10 ** decimals());
+        uint ost2 = (msg.value - ost) % (priceGerda / 10 ** decimals());
+        payable(msg.sender).transfer(ost + ost2);
+        transferGerdaCoin(address(this), msg.sender, amountToken) ;
     }
 
 }
@@ -32,7 +32,7 @@ contract GerdaCoin is ERC20 {
 contract KrendelCoin is ERC20 {
     uint64 constant public priceKrendel = 1.5 ether; //цена токена в ether
     constructor() ERC20("KrendelCoin", "KRENDEL") {
-        uint _totalSupplyKRENDEL = 150000; // 150 000 tokens gerda
+        uint _totalSupplyKRENDEL = 150000 * 10 ** decimals(); // 150 000 tokens gerda
         _mint(address(this), _totalSupplyKRENDEL); // банк GERDA составит 150 000
     }
     //показать баланс токена
@@ -42,6 +42,15 @@ contract KrendelCoin is ERC20 {
 
     function transferKrendelCoin(address _from, address _to, uint _value) public { // перевод токена
         _transfer(_from, _to, _value); 
+    }
+
+    function buyKrendel() public payable {
+        require(msg.value >= 10 **(18 - decimals()),"Insufficient Ether sent");
+        uint ost = msg.value % 10**(18 - decimals());
+        uint amountToken = (msg.value - ost) / (priceKrendel / 10 ** decimals());
+        uint ost2 = (msg.value - ost) % (priceKrendel / 10 ** decimals());
+        payable(msg.sender).transfer(ost + ost2);
+        transferKrendelCoin(address(this), msg.sender, amountToken) ;
     }
 }
 
@@ -58,6 +67,15 @@ contract RTKCoin is ERC20 {
 
     function transferRTKCoin(address _from, address _to, uint _value) public { // перевод токена
         _transfer(_from, _to, _value); 
+    }
+
+    function buyRTK() public payable {
+        require(msg.value >= 10 **(18 - decimals()),"Insufficient Ether sent");
+        uint ost = msg.value % 10**(18 - decimals());
+        uint amountToken = (msg.value - ost) / (priceRTK / 10 ** decimals());
+        uint ost2 = (msg.value - ost) % (priceRTK / 10 ** decimals());
+        payable(msg.sender).transfer(ost + ost2);
+        transferRTKCoin(address(this), msg.sender, amountToken);
     }
 
 }
