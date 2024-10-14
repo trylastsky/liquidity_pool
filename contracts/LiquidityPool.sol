@@ -96,4 +96,12 @@ contract LiquidityPool is Ownable {
         uint256 denominator = reserveIn * 1000 + amountInWithFee;
         return numerator / denominator; // Возвращаем количество токенов, полученных в результате обмена
     }
+
+    // Функция для получения резервов
+function getReserves() external view returns (uint256, uint256) {
+    return (reserveA, reserveB);
+}
+
+
+
 }

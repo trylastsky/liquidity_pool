@@ -1,0 +1,21 @@
+
+.ConnectWallet {
+    margin-left: auto;
+    display: flex;               /* Используем flexbox для размещения элемента */
+    align-items: center;        /* Центруем по вертикали */
+    justify-content: space-between; /* Распределяем пространство между элементами */
+}
+
+#Disconnect {
+    background-color: brown;          /* Цвет фона */
+    color: white;                     /* Цвет текста */
+    border: none;                     /* Убираем рамку */
+    border-radius: 5px;              /* Скругляем углы */
+    padding: 10px 15px;              /* Добавляем внутренние отступы */
+    cursor: pointer;                  /* Курсор при наведении */
+    transition: background-color 0.3s; /* Плавный переход при наведении */
+}
+
+#Disconnect:hover {
+    background-color: darkred;        /* Цвет фона при наведении */
+}
