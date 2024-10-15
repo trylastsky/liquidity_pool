@@ -1,5 +1,5 @@
 .footer {
-    position: absolute;
+    position: relative;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -27,4 +27,28 @@
     color: white;            
     margin: 0 10px;           
     text-decoration: none;   
+}
+
+
+.footer-text {
+    color: #f4f4f4; /* Белый цвет текста для конкретного параграфа */
+    font-size: 1.2rem; /* Размер шрифта для параграфа */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+.scroll-top {
+    position: absolute;
+    right: 20px; /* Отступ от правого края */
+    bottom: 20px; /* Отступ от нижнего края */
+    cursor: pointer; /* Указатель при наведении */
+    font-size: 24px; /* Размер стрелочки */
+    background-color: #282c34; /* Цвет фона */
+    color: white; /* Цвет текста */
+    padding: 10px; /* Внутренний отступ */
+    border-radius: 5px; /* Закругление углов */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.scroll-top:hover {
+    background-color: #3b4049; /* Цвет при наведении */
 }

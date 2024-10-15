@@ -1,6 +1,7 @@
 .textBlock {
     display: flex;
-    flex-direction: column; /* Вертикальное размещение элементов */
-    gap: 20px; /* Отступы между элементами */
+    flex-direction: column; 
+    gap: 20px; 
     
 }
+

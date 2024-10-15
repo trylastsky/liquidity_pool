@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import "./ConnectWallet.css";
 
-const ConnectWallet: React.FC = () => {
-    const [account, setAccount] = useState<string | null>(null);
+interface ConnectWalletProps {
+    setAccount: (account: string | null) => void; // Добавлен пропс setAccount
+}
+
+const ConnectWallet: React.FC<ConnectWalletProps> = ({ setAccount }) => {
+    const [account, setLocalAccount] = useState<string | null>(null);
 
     useEffect(() => {
         const storedAccount = localStorage.getItem('walletAccount');
         if (storedAccount) {
-            setAccount(storedAccount);
+            setLocalAccount(storedAccount);
+            setAccount(storedAccount); // Установить состояние в Header
         }
 
         window.ethereum?.on('accountsChanged', (accounts: string[]) => {
             if (accounts.length > 0) {
-                setAccount(accounts[0]);
+                setLocalAccount(accounts[0]);
+                setAccount(accounts[0]); // Установить состояние в Header
                 localStorage.setItem('walletAccount', accounts[0]);
             } else {
-                setAccount(null);
+                setLocalAccount(null);
+                setAccount(null); // Установить состояние в Header
                 localStorage.removeItem('walletAccount'); 
             }
         });
@@ -30,7 +37,8 @@ const ConnectWallet: React.FC = () => {
             try {
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 const selectedAccount = accounts[0];
-                setAccount(selectedAccount);
+                setLocalAccount(selectedAccount);
+                setAccount(selectedAccount); // Установить состояние в Header
                 localStorage.setItem('walletAccount', selectedAccount);
             } catch (error) {
                 console.error("Error connecting to wallet:", error);
@@ -44,26 +52,28 @@ const ConnectWallet: React.FC = () => {
         if (account) {
             try {
                 await navigator.clipboard.writeText(account);
-                confirm('Копировать Адрес ' + '"'+account+'"' +'?');
+                confirm('Копировать Адрес ' + '"' + account + '"' + '?');
             } catch (err) {
                 console.error('Failed to copy: ', err);
+
             }
         }
     };
 
     const disconnectWallet = () => {
-        setAccount(null);
+        setLocalAccount(null);
+        setAccount(null); // Установить состояние в Header
         localStorage.removeItem('walletAccount');
     };
 
     return (
-        <div className='ConnectWallet'>
+        <div style={{paddingLeft: "20px"}} className='ConnectWallet'>
             {account ? (
                 <div>
                     <span style={{ cursor: 'pointer', color: 'green', marginRight: "20px" }} onClick={copyAddress}>
                         Адрес Кошелька: <span style={{ color: 'white' }}>{account.slice(0, 6)}...{account.slice(-4)}</span>
                     </span>
-                    <button id='Disconnect' className="button" onClick={disconnectWallet}>
+                    <button  id='Disconnect' className="button" onClick={disconnectWallet}>
                         Выход
                     </button>
                 </div>

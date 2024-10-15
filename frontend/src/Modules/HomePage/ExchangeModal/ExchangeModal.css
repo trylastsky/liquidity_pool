@@ -1,0 +1,93 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* Более темный фон для модального окна */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999; /* Убедитесь, что модальное окно поверх всего */
+}
+
+.modalContent {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 450px; /* Установите желаемую ширину */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Добавление тени */
+    font-family: 'Arial', sans-serif; /* Стиль шрифта */
+}
+
+.modalOverlay > h2 {
+    margin-bottom: 20px;
+    font-size: 24px; /* Размер заголовка */
+    text-align: center; /* Центрирование заголовка */
+    color: #333; /* Цвет текста */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px; /* Отступы между полями */
+    font-weight: 600; /* Жирный текст для меток */
+}
+
+select, input[type="number"] {
+    width: 100%; /* Полная ширина для элементов управления */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px; /* Отступ между инпутами */
+    font-size: 16px; /* Размер шрифта */
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Скрыть стрелки у полей для ввода чисел */
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Скрыть стрелки у полей для ввода чисел в Chrome */
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px; /* Отступ сверху */
+}
+
+button {
+    background-color: #007BFF; /* Основной цвет кнопок */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold; /* Жирный текст для кнопок */
+    transition: background-color 0.3s; /* Плавный переход фона */
+}
+
+button:hover {
+    background-color: #0056b3; /* Цвет кнопки при наведении */
+}
+
+.modalOverlay > p {
+    text-align: center; /* Центрирование текста */
+    font-size: 18px; /* Размер текста */
+    color: #666; /* Цвет текста */
+}
+
+
+.errorPopup {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}

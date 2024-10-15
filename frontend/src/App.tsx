@@ -5,6 +5,7 @@ import Header from './Modules/Header/Header';
 import Footer from './Modules/Footer/Footer';
 import HomePage from './Modules/HomePage/HomePage';
 import AboutPage from './Modules/AboutPage/AboutPage';
+import Cabinet from './Modules/Cabinet/Cabinet';
 
 const App: React.FC = () => {
     return (
@@ -12,8 +13,9 @@ const App: React.FC = () => {
           <Header/>
             <div>
                 <Routes>
-                    <Route path="/" element={<HomePage />} /> {/* Главная страница */}
+                    <Route path="/" element={<HomePage />} /> 
                     <Route path="/about" element={<><AboutPage/></>}/>
+                    <Route path="/cabinet" element={<Cabinet />} />
                 </Routes>
             </div>
             <Footer/>

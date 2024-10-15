@@ -1,0 +1,61 @@
+.icon-item {
+    text-align: center;
+    flex: 0 0 auto; /* Запрещаем уменьшение ширины элементов */
+    margin-right: 20px; /* Отступ между иконками */
+}
+
+.icon-item img {
+    width: 100px; /* Ширина иконки */
+    height: 100px; /* Высота иконки */
+    object-fit: cover; 
+    margin-bottom: 10px;
+}
+
+.icon-item p {
+    color: white; /* Цвет текста */
+    margin: 0;
+}
+
+.erc20-icons-wrapper {
+    overflow: hidden;
+    background-color: #282C34; /* Цвет фона */
+    padding: 20px 0; /* Внутренние отступы */
+    border-radius: 8px; /* Закругление углов */
+}
+
+.erc20-icons {
+    display: flex;
+    animation: scroll 20s linear infinite; /* Анимация прокрутки */
+}
+
+/* Состояние анимации при наведении */
+.erc20-icons-wrapper:hover .erc20-icons {
+    animation-play-state: paused; /* Останавливаем анимацию при наведении */
+}
+
+
+
+/* Анимация прокрутки */
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-33.2vw); /* Конечная позиция для эффекта бесконечности */
+    }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .icon-item img {
+        width: 70px; /* Уменьшаем размер иконок для мобильных устройств */
+        height: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .icon-item img {
+        width: 50px; /* Уменьшаем размер иконок для маленьких экранов */
+        height: 50px;
+    }
+}

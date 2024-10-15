@@ -1,0 +1,31 @@
+.pools {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.poolCard {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: box-shadow 0.3s;
+}
+
+.poolCard:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.exchangeButton {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+.exchangeButton:hover {
+    background-color: #45a049;
+}

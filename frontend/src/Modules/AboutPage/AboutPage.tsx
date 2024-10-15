@@ -1,48 +1,39 @@
 import React from 'react';
-import "./AboutPage.css"
+import InfiniteScrollIcons from './InfiniteScrollIcons/InfiniteScrollIcons';
+import iconsData from "./IconsData.json";
+import "./AboutPage.css";
+
+
+import aboutText from "./AboutText.json";
 
 const AboutPage: React.FC = () => {
     return (
         <div className='container'>
-            <h1>О нас</h1>
+            <h1>{aboutText.title}</h1>
             <div className='textBlock'>
-
-            
-            <p >
-                Добро пожаловать в LiqPool! Мы — передовая платформа, 
-                специализирующаяся на биржах пулов ERC20, которая 
-                делает торговлю криптовалютами более доступной, безопасной и 
-                эффективной.
-            </p>
-            <p>
-                Наша миссия — предоставить пользователям возможность 
-                легко и быстро обменивать токены ERC20, используя 
-                передовые технологии блокчейн. Мы верим, что 
-                каждый должен иметь доступ к средствам для управления 
-                своими активами и выборами в мире цифровых валют.
-            </p>
-            <p>
-                В LiqPool мы предлагаем:
-            </p>
-            <ul>
-                <li><strong>Интуитивно понятный интерфейс:</strong> Наша платформа предоставляет 
-                пользователям простой и удобный способ взаимодействия с рынком.</li>
-                <li><strong>Высокую ликвидность:</strong> Мы обеспечиваем высокую ликвидность для 
-                большинства популярных токенов ERC20.</li>
-                <li><strong>Надежность и безопасность:</strong> Мы используем лучшие практики в области 
-                безопасности, чтобы защитить ваши активы.</li>
-            </ul>
-            <p>
-                Наша команда состоит из опытных профессионалов в области 
-                блокчейн-технологий, финансов и программирования, 
-                которые работают над созданием лучшего пользовательского 
-                опыта для наших клиентов.
-            </p>
-            <p>
-                Спасибо за ваш интерес к LiqPool. Мы надеемся, что вы 
-                присоединитесь к нашей платформе и получите 
-                незабываемый опыт обмена криптовалютами!
-            </p>
+                <p>
+                    {aboutText.welcomeMessage}
+                </p>
+                <p>
+                    {aboutText.mission}
+                </p>
+                <InfiniteScrollIcons iconsData={iconsData}/>
+                <p>
+                    В LiqPool мы предлагаем:
+                </p>
+                <ul>
+                    {aboutText.offerings.map((offering, index) => (
+                        <li key={index}>
+                            <strong>{offering.strong}</strong> {offering.description}
+                        </li>
+                    ))}
+                </ul>
+                <p>
+                    {aboutText.team}
+                </p>
+                <p>
+                    {aboutText.thankYou}
+                </p>
             </div>
         </div>
     );

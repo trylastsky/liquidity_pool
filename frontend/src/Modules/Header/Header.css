@@ -5,6 +5,7 @@
     padding: 20px;
     background-color: #282c34; 
     color: white; 
+    height: 100px;
   }
   
  
@@ -14,7 +15,7 @@
   }
   
   .logo img {
-    height: 50px; 
+    height: 50px;
     margin-right: 10px; 
   }
   
@@ -27,4 +28,75 @@
     margin-left: 20px; 
   }
 
+
+  .hamburger {
+    margin-left: 5px;
+    font-size: 2rem; /* Устанавливаем нужный размер иконки бургер-меню */
+    transition: all 3s ease;
+  }
+
+  .hamburger {
+    min-width: 50px;
+    display: none; 
+    font-size: 2rem; /* Увеличиваем размер иконки бургер-меню */
+    cursor: pointer; /* Указатель при наведении */
+    text-align: center; /* Центрируем бургер-меню */
+  }
+
+
+  @media (max-width: 900px) {
+    .hamburger {
+      display: block;
+    }
+    .navigation {
+      display: none; /* Скрываем навигацию по умолчанию на маленьких экранах */
+      position: absolute; /* Позиционируем меню */
+      top: 100px; /* Положение под заголовком */
+      right: 0; /* Сместить меню вправо */
+      background-color: white; /* Цвет фона для навигации */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для меню */
+      z-index: 1000; /* Повышаем уровень, чтобы меню было над другими элементами */
+      flex-direction: column; /* Выстраиваем меню вертикально */
+      padding: 10px 0; /* Отступ сверху и снизу для меню */
+    }
   
+    .navigation.open {
+      border-top: 1px solid #292C34;
+      border-bottom-left-radius:10px ;
+      border-bottom-right-radius: 10px;
+      display: flex; /* Показываем навигацию при открытом меню */
+      background-color: #282C34;
+    }
+
+    .navigation > ul {
+      display: flex;
+      flex-direction: column;
+      padding-right: 20px;
+
+    }
+  }
+
+
+
+  /* Стили для баров в бургер-меню */
+.bar {
+  display: block;
+  width: 30px; /* Ширина баров */
+  height: 4px; /* Высота баров */
+  background-color: white; /* Цвет баров */
+  margin: 5px auto; /* Отступы */
+  transition: all 0.3s ease; /* Плавный переход */
+}
+
+/* Стили для открытия бургер-меню */
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(9px) rotate(45deg); /* Первая палочка поворачивается */
+}
+
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0; /* Вторая палочка исчезает */
+}
+
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg); /* Третья палочка поворачивается */
+}
