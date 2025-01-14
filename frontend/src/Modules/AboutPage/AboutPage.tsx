@@ -4,7 +4,7 @@ import iconsData from "./IconsData.json";
 import "./AboutPage.css";
 
 
-import aboutText from "./AboutText.json";
+import aboutText from "./aboutText.json";
 
 const AboutPage: React.FC = () => {
     return (

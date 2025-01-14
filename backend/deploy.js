@@ -1,18 +1,22 @@
 const {ethers} = require('hardhat')
 
-async function deploy() {
-    const GerdaCoin = await ethers.getContractFactory("Coin")
+async function deploy() { //деплой смарт контракта
+    //создание токенов по образу Coin
+
+    const GerdaCoin = await ethers.getContractFactory("Coin") //получение смарт-контракта Coin
     const gerdaCoin = await GerdaCoin.deploy(
-        "GerdaCoin", 
-        "GERDA",
-        100000,
-        12,
-        10,
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        "GerdaCoin", //имя нашего токена
+        "GERDA", //символ нашего токена
+        100000, //капитализация нашего токена
+        12, //числа после нуля для нашего токена
+        10,  //стоимость в ETH в расчете 10 = 1 ETH
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266" //Адресс владельца
     )
 
     const fs = require('fs')
     const path = require('path')
+
+    //записываем API и адресс
 
     const GERDA = path.join(__dirname, "./artifacts/contracts/ERC20.sol/Coin.json")
 

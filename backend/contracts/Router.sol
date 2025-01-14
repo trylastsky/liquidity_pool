@@ -5,24 +5,24 @@ import "./Factory.sol";
 import "./Pool.sol";
 import "./ERC20.sol";
 
-contract Router {
-    Coin gerda;
-    Coin krendel;
-    Coin rtk;
+contract Router { //контракт для общения между пулами ликвидности
+    Coin gerda;  //1 валюта
+    Coin krendel; //2 валюта
+    Coin rtk; //3 валюта
 
-    Pool GERDA_KRENDEL;
-    Pool KRENDEL_RTK;
+    Pool GERDA_KRENDEL; //1 тип пула
+    Pool KRENDEL_RTK; //2 тип пула
 
-    address poolGK;
-    address poolKR;
+    address poolGK; //адресс пула Gerda-Krendel
+    address poolKR; //адресс пула Krender-Rtk
 
     constructor(
-        address _gerda,
-        address _krendel,
-        address _rtk,
-        address _poolGERDA_KRENDEL,
-        address _poolKRENDEL_RTK
-    ) {
+        address _gerda, //адресс смарт-контракта токена Gerda
+        address _krendel,//адресс смарт-контракта токена Krendel
+        address _rtk,//адресс смарт-контракта токена Rtk
+        address _poolGERDA_KRENDEL, //адресс пула ликвидности GERDA-KRENDEL
+        address _poolKRENDEL_RTK //адресс пула ликвидности KRENDEL-RTK
+    ) {//присвоение значений переменным контракта взависимости от условий конструктора
         gerda = Coin(_gerda);
         krendel = Coin(_krendel);
         rtk = Coin(_rtk);
@@ -32,16 +32,16 @@ contract Router {
         poolKR = _poolKRENDEL_RTK;
     }
 
-    modifier notNull(uint amount) {
+    modifier notNull(uint amount) { //проверка что значение не меньше 0
         require(amount > 0, "invalid amount");
         _;
     }
 
-    function swapGERDAtoRTK(uint amount) public notNull(amount) {
-        //прежде чем переводить токены, нужно произвести расчёт
+    function swapGERDAtoRTK(uint amount) public notNull(amount) { //обмен валюты GERDA на RTK
+        //прежде чем переводить токены, нужно произвести расчёт (вычисление соотношения)
         uint one = amount * gerda.PRICE() * gerda.balanceOf(poolGK);
         uint two = krendel.PRICE() * krendel.balanceOf(poolGK);
-        uint tokens = one / two;
+        uint tokens = one / two; //соотношение
 
         
         uint one1 = tokens * krendel.PRICE() * krendel.balanceOf(poolKR);

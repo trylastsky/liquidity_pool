@@ -1,48 +1,46 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol"; //стандарт токена ERC20
 
+contract Coin is ERC20 { //контракт образ для валюты
 
-contract Coin is ERC20 {
+    address private Owner; //владелец контракта
 
-    address private Owner;
-
-    uint public PRICE;
+    uint public PRICE; //цена токена ETH
     uint8 _decimals;
 
-    // hello
     function decimals() public view virtual override returns (uint8) {
         return _decimals;
     }
 
-    constructor(
-        string memory _name, 
-        string memory _symbol,
-        uint _totalSypply,
+    constructor(// создание персонального токена
+        string memory _name, //имя токена
+        string memory _symbol, //символ токена
+        uint _totalSypply, //общая капитализация токена
         uint8 _desimas,
         uint price, //этот параметр передаетя так: если стоимость 1 eth -> 10; 1.5 eth -> 15; 3 eth -> 30; 6 eth -> 60
-        address owner
-    ) ERC20(_name, _symbol) {
-        _mint(address(this), _totalSypply * 10**_desimas);
-        _decimals = _desimas;
-        PRICE = price *1e17;
-        Owner = owner;
+        address owner //владелец
+    ) ERC20(_name, _symbol) { //токен наследует стандарт ERC20
+        _mint(address(this), _totalSypply * 10**_desimas); //выпуск монет на адресс контракта токена в указанном условии капитале
+        _decimals = _desimas; 
+        PRICE = price *1e17; //цена токена в ETH
+        Owner = owner; //владелец смарт контракта токена
     }
 
-    modifier NotNull(address add) {
+    modifier NotNull(address add) { //проверка существует ли адресс отправителя
         require(add != address(0), "invalid address");
         _;
     }
 
-    modifier OnlyOwner(address add) {
+    modifier OnlyOwner(address add) { //проверка для функций где взаимодействовать с ней может только владелец смарт контракта 
         require(add == Owner, "you are not Owner");
         _;
     }
 
-    function transferFrom(address from, address to, uint amount) virtual override public NotNull(from) NotNull(to) returns(bool) {
-        require(amount > 0, "invalid amount");
-        _transfer(from, to, amount);
+    function transferFrom(address from, address to, uint amount) virtual override public NotNull(from) NotNull(to) returns(bool) { // перевод средств на другой адресс
+        require(amount > 0, "invalid amount"); //нельзя отправить 0 денежных средств
+        _transfer(from, to, amount); //перевод
     }
 
     //в интерфейсе нужно делить чисто на 10**12
