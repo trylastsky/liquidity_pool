@@ -1,31 +1,37 @@
 import React, {useEffect } from 'react';
+
 import {ethers} from "ethers";
+
 import { Connect_interface } from '../../../global';
+
 import "./ConnectWallet.css";
 
-const ConnectWallet: React.FC<Connect_interface> = ({signer,setSigner,provider,setProvider }) => {
+const ConnectWallet: React.FC<Connect_interface> = ({
+    signer,
+    setSigner,
+    provider,
+    setProvider
+}) => {
 
-    
-    const init_provider = async () => { 
+    const init_provider = () => { //инициализация провайдера
         if(window.ethereum) { 
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            setProvider(provider);
+            const _provider = new ethers.BrowserProvider(window.ethereum);
+            setProvider(_provider);
         }
-        else { 
+        else {
             setProvider(null);
             alert("Установите расширение для блокчейна Metamask");
         }
     }
 
-    const check_signer_of_memory = () => {
+    const check_signer_of_memory = () => { //достает данные из сесии пользователя при перезагрузке (signer)
         const _signer = localStorage.getItem('signer');
         if(_signer) {
             setSigner(JSON.parse(_signer));
         }
     }
 
-
-    const connect_wallet = async () => { 
+    const connect_wallet = async () => {
         const signer = await provider.getSigner(); 
         setSigner(signer); 
         localStorage.setItem('signer', JSON.stringify(signer));
@@ -40,26 +46,18 @@ const ConnectWallet: React.FC<Connect_interface> = ({signer,setSigner,provider,s
     }
 
 
-    useEffect(() => { //для функций
+    useEffect(() => { //для вызова стартовых функций при рендеринге страницы
         init_provider();
         check_signer_of_memory();
     }, []);
 
-    useEffect(() => { //для событий #пофиксить !!! 
- 
-        const change_signer_event = () => {
-            console.log(signer);
-            console.log(provider);
-            connect_wallet();        
+    useEffect(() => { //для событий 
+        window.ethereum?.on('accountsChanged', connect_wallet); //смена аккаунта в кошельке
+    
+        return () => {    //размонтирование событий после размонтирования компонента
+            window.ethereum.removeListener('accountsChanged', connect_wallet);
         }
-
-        window.ethereum?.on('accountsChanged', change_signer_event);
-
-        //размонтирование событий после размонтирования компонента
-        return () => { 
-            window.ethereum.removeListener('accountsChanged', change_signer_event);
-        }
-    }, []);
+    }, [provider]); //в скобочки указываем переменные которые используются в функциях
 
 
     return (
@@ -67,18 +65,17 @@ const ConnectWallet: React.FC<Connect_interface> = ({signer,setSigner,provider,s
             {signer ? (
                 <div>
                     <span style={{ cursor: 'pointer', color: 'green', marginRight: "20px" }} >
-                        Адрес Кошелька: <span style={{ color: 'white' }}>{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>
+                        Адрес Кошелька: <span style={{ color: 'white' }}>{signer.address.slice(0,12)}...{signer.address.slice(-4)}</span>
                     </span>
                     <button  id='Disconnect' className="button" onClick={disconnect_wallet}>
                         Выход
                     </button>
+               
                 </div>
-            ) : (
-                <button className="button" onClick={connect_wallet}>
-                    Войти в Кошелек
-                </button>
+                    ) : (
+                <button className="button" onClick={connect_wallet}>Войти в Кошелек</button>
             )}
-        </div>
+        </div> 
     );
 };
 

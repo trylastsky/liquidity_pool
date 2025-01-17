@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import {ethers} from "ethers";
+
 import factory_json from "../../../../backend/artifacts/contracts/Factory.sol/Factory.json";
 
 import "./AboutPage.css";
@@ -13,7 +14,7 @@ const AboutPage: React.FC = () => {
     const handleGetPools = async () => {
         try {
             // Подключение к провайдеру (например, Metamask)
-            const provider = new ethers.BrowserProvider(global?.window?.ethereum);
+            const provider = new ethers.BrowserProvider(window.ethereum);
             // Запрос разрешения на доступ к счетам
             await provider.send("eth_requestAccounts", []);
             const signer = await provider.getSigner();
