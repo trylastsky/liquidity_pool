@@ -81,9 +81,9 @@ contract Pool {
 
 
     struct Info {
-        address ThisPool;
-        address Owner;
-        string Name1;
+        address ThisPool; //адресс этого пула
+        address Owner; //адресс владельца пула
+        string Name1; //
         string Name2;
         uint Price;
         uint Reserve1;

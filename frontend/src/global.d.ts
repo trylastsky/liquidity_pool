@@ -1,16 +1,14 @@
-interface Window {
-    ethereum: {
-      utils: any;
-      removeListener(arg0: string, arg1: () => void): unknown;
-      on(arg0: string, arg1: (accounts: string[]) => void): unknown;
-      isMetaMask: boolean;
-      request: (args: { method: string }) => Promise<any>;
-    };
-  }
-  
+declare global { //задаем глобальный тип
 
-  interface IconData {
-    src: string;
-    alt: string;
-    label: string;
+  interface Window { //разрешаем метамаску быть провайдером XD
+  ethereum: any
+}
+
+}
+
+export interface Connect_interface {
+  signer:ethers.Signer | null,
+  setSigner: (signer:ethers.Signer | null) => void,
+  provider: ethers.Provider,
+  setProvider: (provider:ethers.Provider | null) => void
 }

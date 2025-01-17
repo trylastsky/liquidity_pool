@@ -4,12 +4,12 @@ pragma solidity ^0.8.24;
 import "./Pool.sol";
 
 contract Factory {
-    address[] public  pools;
+    address[] public  pools; //общий массив пулов
 
     function deployPool(
-        address token1, 
+        address token1, //адресс контракта первого токена
         uint amount1,   //передаётся целое количество токена
-        address token2,
+        address token2,//адресс контракта второго токена
         uint amount2,   //передаётся целое количество токена
         address profi,
         address owner

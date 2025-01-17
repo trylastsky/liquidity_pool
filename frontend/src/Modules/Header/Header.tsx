@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import ConnectWallet from './ConnectWallet/ConnectWallet';
+import { Connect_interface } from "../../global";
 import './Header.css';
 
-const Header: React.FC = () => {
-  const [account, setAccount] = useState<string | null>(null);
+
+
+const Header: React.FC<Connect_interface> = ({signer,setSigner,provider,setProvider}) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -25,10 +27,10 @@ const Header: React.FC = () => {
       </div>
       <nav className={`navigation ${isMenuOpen ? 'open' : ''}`}>
         <ul>
-          <ConnectWallet setAccount={setAccount}/>
+          <ConnectWallet signer={signer} setSigner={setSigner} provider={provider} setProvider={setProvider}/>
           <li><a href="/">Главная</a></li>
           <li><a href="/about">О Нас</a></li>
-          {account && <li><a href="/cabinet">Личный кабинет</a></li>}
+          {signer && <li><a href="/cabinet">Личный кабинет</a></li>}
         </ul>
       </nav>
     </header>

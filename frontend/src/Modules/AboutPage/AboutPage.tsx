@@ -13,9 +13,11 @@ const AboutPage: React.FC = () => {
     const handleGetPools = async () => {
         try {
             // Подключение к провайдеру (например, Metamask)
-            const provider = new ethers.BrowserProvider(window.ethereum);
+            const provider = new ethers.BrowserProvider(global?.window?.ethereum);
             // Запрос разрешения на доступ к счетам
             await provider.send("eth_requestAccounts", []);
+            const signer = await provider.getSigner();
+            console.log(signer.address);
 
             // Создайте экземпляр контракта
             const contract = new ethers.Contract(factory_json.address, factory_json.abi, provider);

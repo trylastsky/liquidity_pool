@@ -1,84 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect } from 'react';
+import {ethers} from "ethers";
+import { Connect_interface } from '../../../global';
 import "./ConnectWallet.css";
 
-interface ConnectWalletProps {
-    setAccount: (account: string | null) => void; // Добавлен пропс setAccount
-}
+const ConnectWallet: React.FC<Connect_interface> = ({signer,setSigner,provider,setProvider }) => {
 
-const ConnectWallet: React.FC<ConnectWalletProps> = ({ setAccount }) => {
-    const [account, setLocalAccount] = useState<string | null>(null);
-
-    useEffect(() => {
-        const storedAccount = localStorage.getItem('walletAccount');
-        if (storedAccount) {
-            setLocalAccount(storedAccount);
-            setAccount(storedAccount); // Установить состояние в Header
+    
+    const init_provider = async () => { 
+        if(window.ethereum) { 
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            setProvider(provider);
         }
+        else { 
+            setProvider(null);
+            alert("Установите расширение для блокчейна Metamask");
+        }
+    }
 
-        window.ethereum?.on('accountsChanged', (accounts: string[]) => {
-            if (accounts.length > 0) {
-                setLocalAccount(accounts[0]);
-                setAccount(accounts[0]); // Установить состояние в Header
-                localStorage.setItem('walletAccount', accounts[0]);
-            } else {
-                setLocalAccount(null);
-                setAccount(null); // Установить состояние в Header
-                localStorage.removeItem('walletAccount'); 
-            }
-        });
-        
-        return () => {
-            window.ethereum?.removeListener('accountsChanged', () => {});
-        };
+    const check_signer_of_memory = () => {
+        const _signer = localStorage.getItem('signer');
+        if(_signer) {
+            setSigner(JSON.parse(_signer));
+        }
+    }
+
+
+    const connect_wallet = async () => { 
+        const signer = await provider.getSigner(); 
+        setSigner(signer); 
+        localStorage.setItem('signer', JSON.stringify(signer));
+    }
+
+    const disconnect_wallet = () => { 
+        const confirm = window.confirm("Вы точно хотите выйти из аккаунта?"); 
+        if (confirm) { 
+            setSigner(null); 
+            localStorage.removeItem('signer');
+        }
+    }
+
+
+    useEffect(() => { //для функций
+        init_provider();
+        check_signer_of_memory();
     }, []);
 
-    const connectWallet = async () => {
-        if (window.ethereum) {
-            try {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                const selectedAccount = accounts[0];
-                setLocalAccount(selectedAccount);
-                setAccount(selectedAccount); // Установить состояние в Header
-                localStorage.setItem('walletAccount', selectedAccount);
-            } catch (error) {
-                console.error("Error connecting to wallet:", error);
-            }
-        } else {
-            alert('Пожалуйста, установите Metamask');
+    useEffect(() => { //для событий #пофиксить !!! 
+ 
+        const change_signer_event = () => {
+            console.log(signer);
+            console.log(provider);
+            connect_wallet();        
         }
-    };
 
-    const copyAddress = async () => {
-        if (account) {
-            try {
-                await navigator.clipboard.writeText(account);
-                confirm('Копировать Адрес ' + '"' + account + '"' + '?');
-            } catch (err) {
-                console.error('Failed to copy: ', err);
+        window.ethereum?.on('accountsChanged', change_signer_event);
 
-            }
+        //размонтирование событий после размонтирования компонента
+        return () => { 
+            window.ethereum.removeListener('accountsChanged', change_signer_event);
         }
-    };
+    }, []);
 
-    const disconnectWallet = () => {
-        setLocalAccount(null);
-        setAccount(null); // Установить состояние в Header
-        localStorage.removeItem('walletAccount');
-    };
 
     return (
         <div style={{paddingLeft: "20px"}} className='ConnectWallet'>
-            {account ? (
+            {signer ? (
                 <div>
-                    <span style={{ cursor: 'pointer', color: 'green', marginRight: "20px" }} onClick={copyAddress}>
-                        Адрес Кошелька: <span style={{ color: 'white' }}>{account.slice(0, 6)}...{account.slice(-4)}</span>
+                    <span style={{ cursor: 'pointer', color: 'green', marginRight: "20px" }} >
+                        Адрес Кошелька: <span style={{ color: 'white' }}>{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>
                     </span>
-                    <button  id='Disconnect' className="button" onClick={disconnectWallet}>
+                    <button  id='Disconnect' className="button" onClick={disconnect_wallet}>
                         Выход
                     </button>
                 </div>
             ) : (
-                <button className="button" onClick={connectWallet}>
+                <button className="button" onClick={connect_wallet}>
                     Войти в Кошелек
                 </button>
             )}

@@ -97,7 +97,7 @@ async function deploy() { //деплой смарт контракта
 
 
 
-    await factory.deployPool(
+    await factory.deployPool( //Соотношение 1500ETH / 1500ETH
         gerdaCoin.target,
         1500,
         krendelCoin.target,
@@ -106,7 +106,7 @@ async function deploy() { //деплой смарт контракта
         "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
     );
 
-    await factory.deployPool(
+    await factory.deployPool( //соотношение 3000ETH / 3000ETH
         krendelCoin.target,
         2000,
         rTKCoin.target,
