@@ -5,50 +5,51 @@ import "./ERC20.sol";
 
 contract Staking {
 
-    Coin public PROFI;
-    address private OwnerProfi;
+    Token public PROFI; //токен LP 
+    address private Owner; //
 
-    constructor(address profi, address owner) {
-        PROFI = Coin(profi);
-        OwnerProfi = owner;
+    struct Info { //структура информации о стейкинге пользователя
+        uint count_LP; //колво LP на стейкинге
+        uint last_reward_time; //последнее время вознаграждения
+        uint reward_per_second; //ставка вознагрождения в секунду 
     }
 
-    struct Info {
-        uint countLP;
-        uint lastRewardTime;
-        uint rewardPerSecond;
-    }
-    
-    mapping (address => Info) public userStake;
+    mapping (address => Info) public user_stake_info; //мапинг где мы храним информацию о стейкинге пользователя
 
 
-    //создать или обновить stake
-    function setStake(uint amount) public {
-        require(PROFI.balanceOf(msg.sender) >= amount, "invalid token");
-
-        Info storage info = userStake[msg.sender];
-
-        info.countLP += amount;
-        info.rewardPerSecond = 1;
-        info.lastRewardTime = block.timestamp;
-
-        PROFI.transferFrom(msg.sender, address(this), amount);
+    constructor(
+        address profi,//адресс Profi смарта
+        address owner// адресс владельца PROFI смарта
+    ) {
+        PROFI = Token(profi); //адресс Profi смарта
+        Owner = owner;// адресс владельца PROFI смарта
     }
 
-    function getRW() public {
-        require(userStake[msg.sender].countLP > 0, "not stake");
-        require(PROFI.balanceOf(address(this)) > 0, "contract balance is zero");
 
-        Info storage info = userStake[msg.sender];
+    function set_stake(uint amount) public {  //создать или обновить stake
+        require(PROFI.balanceOf(msg.sender) >= amount, "invalid token"); //проверка есть ли у пользователя токены LP
 
-        uint one = block.timestamp - info.lastRewardTime;
-        uint two = (info.countLP / PROFI.balanceOf(address(this)) + 1e6) / 1e6;
+        Info storage info = user_stake_info[msg.sender]; //приведение типов из значения user_stake_info
 
-        uint twoInTree = ((one / (30 days)) * 5e4 + 1e6) / 1e6;
+        info.count_LP += amount; //колво LP на счету = кол-ву внесенных LP на стейкинг
+        info.reward_per_second = 1; //колво lp в секунду
+        PROFI.transferFrom(msg.sender, address(this), amount); //перевод LP токенов от пользователя на стейкинг счет
+    }
 
-        uint rw = (info.countLP / 1e6) * one * info.rewardPerSecond * two * twoInTree;
+    function get_RW() public { //получить вознаграждение
+        require(user_stake_info[msg.sender].count_LP > 0, "not stake"); //проверка достаточно ли токенов LP у пользователя на балансе стейкинга
+        require(PROFI.balanceOf(address(this)) > 0, "contract balance is zero"); //проверка сколько токенов LP находится на контракте стейкинга сейчас
 
-        info.lastRewardTime = block.timestamp;
-        PROFI.Mint(OwnerProfi, msg.sender, rw);
+        Info storage info = user_stake_info[msg.sender]; //приведение типов user_stake_info
+        //формула получения вознаграждения из ТЗ
+        uint one = block.timestamp - info.last_reward_time;
+        uint two = (info.count_LP / PROFI.balanceOf(address(this)) + 1e6) / 1e6;
+
+        uint two_in_tree = ((one / (30 days)) * 5e4 + 1e6) / 1e6;
+
+        uint rw = (info.count_LP / 1e6) * one * info.reward_per_second * two * two_in_tree; // финальная сумма которую получит user
+
+        info.last_reward_time = block.timestamp;
+        PROFI.Mint(Owner, msg.sender, rw); //выпускаем монеты и отдаем их как награду пользователю
     }
 }

@@ -103,7 +103,8 @@ async function deploy() { //деплой смарт контракта
         krendelCoin.target,
         1000,
         professional.target,
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "GK"
     );
 
     await factory.deployPool( //соотношение 3000ETH / 3000ETH
@@ -112,7 +113,8 @@ async function deploy() { //деплой смарт контракта
         rTKCoin.target,
         1000,
         professional.target,
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "KR"
     );
 
     const add = await factory.getAllAddressPools()
