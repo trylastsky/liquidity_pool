@@ -16,7 +16,7 @@ contract Factory { //контракт из которого производит
         UserPool[] Pools;
     }
 
-    mapping (address => User) user;//маппинг пользователя
+    mapping (address => User) public user;//маппинг пользователя
     mapping (address => bool) private user_status_registration; //статус регистрации пользователя
 
     function deploy_pool( //функция деплоя пула
@@ -36,11 +36,11 @@ contract Factory { //контракт из которого производит
             owner //адресс владельца пула
         );
         pools.push(new_pool); //добавление обьекта пула в общий массив пулов
-        user[msg.sender].Pools.push(UserPool(pools.length, new_pool)); 
+        user[owner].Pools.push(UserPool(pools.length, new_pool)); 
         return new_pool;
     }
 
-    function getAllAddressPools() public view returns (Pool[] memory) {
+    function get_pools() public view returns (Pool[] memory) {
         return pools;
     }
 

@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Modules/Header/Header';
 import Footer from './Modules/Footer/Footer';
 import HomePage from './Modules/HomePage/HomePage';
-import AboutPage from './Modules/AboutPage/AboutPage';
 import Cabinet from './Modules/Cabinet/Cabinet';
 import { ethers, Contract} from 'ethers';
 
@@ -12,8 +11,10 @@ import factory_json from "../../backend/artifacts/contracts/Factory.sol/Factory.
 import tokens_json from "../../backend/artifacts/contracts/ERC20.sol/Token.json";
 import router_json from "../../backend/artifacts/contracts/Router.sol/Router.json";
 import staking_json from "../../backend/artifacts/contracts/Staking.sol/Staking.json";
+import pool_json from "../../backend/artifacts/contracts/Pool.sol/Pool.json";
 
 const App: React.FC = () => {
+
     const [signer, setSigner] = useState<ethers.Signer | null>(null);
     const [provider, setProvider] = useState<ethers.Provider | null>(null);
 
@@ -24,6 +25,8 @@ const App: React.FC = () => {
     const [FACTORY_contract, set_FACTORY_contract] = useState<ethers.Contract | null>(null);
     const [ROUTER_contract, set_ROUTER_contract] = useState<ethers.Contract | null>(null);
     const [STAKING_contract, set_STAKING_contract] = useState<ethers.Contract | null>(null);
+
+    const [pools_contracts, set_pools_contracts] = useState<any[] | null>(null);
 
     const init_contracts = () => {
         try {
@@ -40,37 +43,33 @@ const App: React.FC = () => {
             set_RTK_contract(RTK);
             set_PROFI_contract(PROFI);
             set_ROUTER_contract(ROUTER);
-            set_STAKING_contract(STAKING)
-
+            set_STAKING_contract(STAKING) 
         }
         catch(e) {
             console.log(e);
         }
     }
 
-    const get_all_pools = async () => {
-        if(FACTORY_contract) {
-            const _get_all_pools = await FACTORY_contract.getAllAddressPools();
-            console.log(_get_all_pools[0]);
-            const info = await _get_all_pools[0].getInfo();
-            console.log(info);
-            
-        }
-        else {
-            "Возникла ошибка при соединении с сервером";
+    const get_all_pools = async () => { //получение всех образов пулов и информации о них
+        if(FACTORY_contract !== null && provider !== null) {
+            const _get_all_pools_addresses = await FACTORY_contract.get_pools();
+            const new_pools_contracts = _get_all_pools_addresses.map((pool_address: string) => { //обязательно .map (ассинхронность)
+                return new Contract(pool_address, pool_json.abi, provider);
+            });
+            set_pools_contracts(new_pools_contracts);
         }
     }
 
-
-    useEffect(() => {
+    useEffect(() => { //инициализация
         init_contracts();
     },[provider])
 
-
+    useEffect(() => {
+        get_all_pools();
+    }, [provider,FACTORY_contract])
 
     return (
         <Router>
-            <button onClick={get_all_pools}>ХУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУЙ</button>
           <Header 
             signer={signer}
             setSigner={setSigner}
@@ -79,9 +78,20 @@ const App: React.FC = () => {
             />
             <div>
                 <Routes>
-                    <Route path="/" element={<HomePage />} /> 
-                    <Route path="/about" element={<><AboutPage/></>}/>
-                    <Route path="/cabinet" element={<Cabinet />} />
+                    <Route path="/" element={<HomePage 
+                    pools_contracts = {pools_contracts}
+                    provider={provider}
+                    FACTORY={FACTORY_contract}
+                    />} /> 
+                    <Route path="/cabinet" element={<Cabinet
+                    signer={signer}
+                    provider={provider}
+                    FACTORY = {FACTORY_contract}
+                    GERDA = {GERDA_contract}
+                    KRENDEL = {KRENDEL_contract}
+                    RTK = {RTK_contract}
+                    PROFI = {PROFI_contract}
+                    />} />
                 </Routes>
             </div>
             <Footer/>

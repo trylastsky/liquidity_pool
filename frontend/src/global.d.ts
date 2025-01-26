@@ -1,3 +1,5 @@
+import { Uint } from "web3";
+
 declare global { //задаем глобальный тип
 
   interface Window { //разрешаем метамаску быть провайдером XD
@@ -11,10 +13,19 @@ export interface Connect_interface {
   setSigner: (signer:ethers.Signer | null) => void,
   provider: ethers.Provider,
   setProvider: (provider:ethers.Provider | null) => void,
-  // contract: ethers.Contract | null,
-  // setContract: (contract:ethers.Contract | null) => void
 }
 
 export interface init_contract_interface {
   contract: ethers.Contract;
+}
+
+export interface liquidity_pool {
+  id: number;
+  address_pool: string;
+  type: string;
+  owner_pool_address:string;
+  token1_address:string;
+  token2_address:string;
+  token1_reserve:number;
+  token2_reserve:number;
 }

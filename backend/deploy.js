@@ -123,7 +123,7 @@ async function deploy() { //деплой смарт контракта
 
 
 
-    const add = await factory.getAllAddressPools()
+    const add = await factory.get_pools()
 
     const pools_ = path.join(__dirname, './artifacts/contract/Pool.sol/Pool.json') 
 

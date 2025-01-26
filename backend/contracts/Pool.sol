@@ -14,7 +14,7 @@ contract Pool {
 
     struct Info { //структура информации о пуле
         address this_pool; //адресс пула ликвидности
-        string this_pool_name; //имя данного пула
+        string this_pool_type; //имя данного пула
         address owner; //адресс владельца контракта
         Token token1; //обьект первого токена
         Token token2; //обьект второго токена 
