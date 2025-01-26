@@ -9,34 +9,61 @@ import Cabinet from './Modules/Cabinet/Cabinet';
 import { ethers, Contract} from 'ethers';
 
 import factory_json from "../../backend/artifacts/contracts/Factory.sol/Factory.json";
+import tokens_json from "../../backend/artifacts/contracts/ERC20.sol/Token.json";
+import router_json from "../../backend/artifacts/contracts/Router.sol/Router.json";
+import staking_json from "../../backend/artifacts/contracts/Staking.sol/Staking.json";
 
 const App: React.FC = () => {
     const [signer, setSigner] = useState<ethers.Signer | null>(null);
     const [provider, setProvider] = useState<ethers.Provider | null>(null);
-    const [contract, setContract] = useState<ethers.Contract | null>(null);
 
-    const init_contract = () => {
-        const newContract = new Contract(factory_json.address, factory_json.abi, provider);
-        setContract(newContract);
-        console.log("контракт загружен"+ contract)
+    const [GERDA_contract, set_GERDA_contract] = useState<ethers.Contract | null>(null);
+    const [KRENDEL_contract, set_KRENDEL_contract] = useState<ethers.Contract | null>(null);
+    const [RTK_contract, set_RTK_contract] = useState<ethers.Contract | null>(null);
+    const [PROFI_contract, set_PROFI_contract] = useState<ethers.Contract | null>(null);
+    const [FACTORY_contract, set_FACTORY_contract] = useState<ethers.Contract | null>(null);
+    const [ROUTER_contract, set_ROUTER_contract] = useState<ethers.Contract | null>(null);
+    const [STAKING_contract, set_STAKING_contract] = useState<ethers.Contract | null>(null);
+
+    const init_contracts = () => {
+        try {
+            const FACTORY = new Contract(factory_json.address, factory_json.abi, provider);
+            const GERDA = new Contract(tokens_json.gerda, tokens_json.abi, provider);
+            const KRENDEL = new Contract(tokens_json.krendel, tokens_json.abi, provider);
+            const RTK = new Contract(tokens_json.rtk, tokens_json.abi, provider);
+            const PROFI = new Contract(tokens_json.profi, tokens_json.abi, provider);
+            const ROUTER = new Contract(router_json.address, router_json.abi, provider);
+            const STAKING = new Contract(staking_json.address, staking_json.abi, provider);
+            set_FACTORY_contract(FACTORY);
+            set_GERDA_contract(GERDA);
+            set_KRENDEL_contract(KRENDEL);
+            set_RTK_contract(RTK);
+            set_PROFI_contract(PROFI);
+            set_ROUTER_contract(ROUTER);
+            set_STAKING_contract(STAKING)
+
+        }
+        catch(e) {
+            console.log(e);
+        }
     }
 
     const get_all_pools = async () => {
-        if(contract) {
-            const _get_all_pools = await contract.getAllAddressPools();
-            console.log("Адресса пулов:"+_get_all_pools);
+        if(FACTORY_contract) {
+            const _get_all_pools = await FACTORY_contract.getAllAddressPools();
+            console.log(_get_all_pools[0]);
             const info = await _get_all_pools[0].getInfo();
-            console.log("ПОлученная информация"+ info);
+            console.log(info);
+            
         }
         else {
-            console.log("возникла ошибка при соединении с сервером")
+            "Возникла ошибка при соединении с сервером";
         }
     }
 
 
     useEffect(() => {
-        console.log("контракт загружается")
-        init_contract();
+        init_contracts();
     },[provider])
 
 

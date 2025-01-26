@@ -52,6 +52,8 @@ const ConnectWallet: React.FC<Connect_interface> = ({
     }, []);
 
     useEffect(() => { //для событий 
+        if (!window.ethereum) return; //отменяем выполнение useEffect если нет Metamask;
+
         window.ethereum?.on('accountsChanged', connect_wallet); //смена аккаунта в кошельке
     
         return () => {    //размонтирование событий после размонтирования компонента

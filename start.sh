@@ -12,4 +12,5 @@ npx hardhat run --network localhost ./deploy.js
 
 sleep 5;
 
-python3 ../frontend/main.py 
+cd ../frontend
+npm run dev

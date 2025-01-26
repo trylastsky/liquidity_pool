@@ -6,12 +6,18 @@ import "./Pool.sol";
 contract Factory { //контракт из которого производится деплой всех пулов и хранение информации об них
     Pool[] public  pools; //массив всех пулов
 
-     constructor() { //задаем имя пользователя по тз
-        user[0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266].Name = 'Tom';
-        user[0x70997970C51812dc3A010C7d01b50e0d17dc79C8].Name = 'Ben';
-        user[0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC].Name = 'Rick';
-        user[0x90F79bf6EB2c4f870365E785982E1f101E93b906].Name = 'Owner';
+    struct UserPool {
+        uint Id;
+        Pool userPool;
     }
+
+    struct User {
+        string Name;
+        UserPool[] Pools;
+    }
+
+    mapping (address => User) user;//маппинг пользователя
+    mapping (address => bool) private user_status_registration; //статус регистрации пользователя
 
     function deploy_pool( //функция деплоя пула
         address token1,  //адресс первого токена
@@ -20,7 +26,7 @@ contract Factory { //контракт из которого производит
         uint amount2,   //передаётся целое количество токена
         address profi, //адрис стейкинг смартконтракта
         address owner //адресс владельца пула
-    ) public returns (address) { //
+    ) public returns (Pool) { //
         Pool new_pool = new Pool( //создание пула по образу смарт контракта Pool
             token1,  //адресс первого токена
             amount1 * 1e12, //передаётся  количество токена
@@ -30,27 +36,23 @@ contract Factory { //контракт из которого производит
             owner //адресс владельца пула
         );
         pools.push(new_pool); //добавление обьекта пула в общий массив пулов
-        user[msg.sender].Pools.push(UserPool(pools.length, address(new_pool))); 
-        return address(new_pool);
+        user[msg.sender].Pools.push(UserPool(pools.length, new_pool)); 
+        return new_pool;
     }
 
     function getAllAddressPools() public view returns (Pool[] memory) {
         return pools;
     }
 
-    struct UserPool {
-        uint Id;
-        address Address;
-    }
-
-    struct User {
-        string Name;
-        UserPool[] Pools;
-    }
-
-    mapping (address => User) user;
-
-    function auth() public view returns(User memory) {
+    function authorization_user() public view returns(User memory) {
+        require(user_status_registration[msg.sender] == true, "this user is not registred");
         return user[msg.sender];
+    }
+
+    function registration_user(string memory user_name, address user_address) public {
+        require(user_address != address(0), "incorrect address");
+        require(user_status_registration[user_address] == false, "user already registred");
+        user[user_address].Name = user_name; //обьявление имени
+        user_status_registration[user_address] = true; //already registred
     }
 }

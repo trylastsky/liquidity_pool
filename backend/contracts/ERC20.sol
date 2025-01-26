@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol"; //стандарт токена ERC20
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol"; //стандарт токена ERC20;
 
 contract Token is ERC20 { //контракт образ для валюты
 
@@ -33,7 +33,7 @@ contract Token is ERC20 { //контракт образ для валюты
         _;
     }
 
-    function transfer_from(address from, address to, uint amount) public not_null(from) not_null(to) returns(bool status) { // перевод средств на другой адресс
+    function transferFrom(address from, address to, uint amount) virtual override public not_null(from) not_null(to) returns(bool status) { // перевод средств на другой адресс
         require(amount > 0, "invalid amount"); //нельзя отправить 0 денежных средств
         _transfer(from, to, amount); //перевод
         return status;
