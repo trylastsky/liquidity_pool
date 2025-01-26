@@ -52,7 +52,7 @@ contract Factory { //контракт из которого производит
     function registration_user(string memory user_name, address user_address) public {
         require(user_address != address(0), "incorrect address");
         require(user_status_registration[user_address] == false, "user already registred");
-        user[user_address].Name = user_name; //обьявление имени
         user_status_registration[user_address] = true; //already registred
+        user[user_address].Name = user_name; //обьявление имени
     }
 }

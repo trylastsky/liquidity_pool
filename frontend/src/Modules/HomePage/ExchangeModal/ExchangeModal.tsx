@@ -7,34 +7,24 @@ interface ExchangeModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (fromToken: string, toToken: string, amount: number) => void;
-    availableTokens: string[];
+    pool:any;
+    pool_contract:any;
 }
 
-const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose, onConfirm, availableTokens }) => {
+const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose,pool,pool_contract}) => {
     
-    const [fromToken, setFromToken] = useState<string>(availableTokens[0]);
-    const [toToken, setToToken] = useState<string>(availableTokens[1]);
     const [amount, setAmount] = useState<number>(0);
     const [result, setResult] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [exchangeRate, setExchangeRate] = useState<number>(1); // Коэффициент
 
-    useEffect(() => {
-        // Здесь будет логика получения коэффициента с бэкенда
-        // Для примера, установить статические коэффициенты
-        const fetchExchangeRate = async () => {
-            // Заглушка, заменить на реальный запрос к API
-            const rate = fromToken === 'GERDA' && toToken === 'KRENDEL' ? 0.01 :
-                         fromToken === 'KRENDEL' && toToken === 'GERDA' ? 100 :
-                         1; // Для других пар токенов
-        
-            setExchangeRate(rate);
-            // Также сбрасываем результат, чтобы избежать некорректного отображения
-            setResult(null);
-        };
-
-        fetchExchangeRate();
-    }, [fromToken, toToken]);
+    const swap_token = async (
+        _amount:number,
+        sended_token_address:string,
+        received_token_address:string
+    ) => {
+        const response = await pool_contract.swap_token(_amount, sended_token_address, received_token_address);
+        console.log(response);
+    }
 
     const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -47,34 +37,12 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose, onConfir
             setError(null);
             const amountValue = parseFloat(value);
             setAmount(amountValue);
-            calculateResult(amountValue);
         }
     };
 
-    const calculateResult = (amount: number) => {
-        if (fromToken !== toToken) {
-            setResult(amount * exchangeRate);
-        } else {
-            setResult(amount);
-        }
-    };
 
-    const handleConfirm = () => {
-        if (amount <= 0) {
-            setError("Пожалуйста, введите корректное число.");
-            return;
-        }
-        onConfirm(fromToken, toToken, amount);
-        onClose();
-    };
 
-    const handleSwapTokens = () => {
-        setFromToken(toToken);
-        setToToken(fromToken);
-        // Сбрасываем количество и результат при обмене
-        setAmount(0);
-        setResult(null);
-    };
+
 
     return (
         isOpen ? (
@@ -82,10 +50,10 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose, onConfir
                 <div className="modalContent">
                     <h2>Обмен токенов</h2>
                     {result == null && (<>
-                        <p>Введите число для обмена <strong>{fromToken}</strong> на <strong>{toToken}</strong></p>
+                        <p>Введите число для обмена <strong>{pool.type.split('-')[0]}</strong> на <strong>{pool.type.split('-')[1]}</strong></p>
                     </>)}
                     {amount > 0 && result !== null && (
-                        <p><strong>{amount} {fromToken}</strong> на <strong>{result.toFixed(2)} {toToken}</strong></p>
+                        <p><strong>{amount} {}</strong> на <strong>{result.toFixed(2)} </strong></p>
 
                     )}
                     <label>
@@ -97,13 +65,13 @@ const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose, onConfir
                     )}
                     <button 
                         className="swapButton"
-                        onClick={handleSwapTokens}
+                        
                         title="Поменять"
                     >
                         <FontAwesomeIcon icon={faExchangeAlt} />
                     </button>
                     <div className="modalButtons">
-                        <button onClick={handleConfirm}>Подтвердить</button>
+                        <button onClick={() => {swap_token(amount, pool.token1_address, pool.token2_address)}}>Подтвердить</button>
                         <button onClick={onClose}>Отмена</button>
                     </div>
                 </div>

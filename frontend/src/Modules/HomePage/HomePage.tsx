@@ -113,7 +113,8 @@ const HomePage: React.FC<home_page_interface> = ({pools_contracts, provider, FAC
                     isOpen={isModalOpen} 
                     onClose={handleCloseModal} 
                     onConfirm={handleConfirmExchange} 
-                    availableTokens={selectedPool.tokens} // доступные токены кидаються в модальное окно
+                    pool = {selectedPool}
+                    pool_contract = {pools_contracts?.[selectedPool.id]}
                 />
             )}
         </div>

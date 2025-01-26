@@ -4,12 +4,12 @@ import { ethers } from 'ethers';
 
 interface cabinet_interface {
     signer:any | null;
-    provider: ethers.Provider | null;
-    FACTORY:ethers.Contract | null;
-    GERDA:ethers.Contract | null;
-    KRENDEL:ethers.Contract | null;
-    RTK:ethers.Contract | null;
-    PROFI:ethers.Contract | null;
+    provider: any | null;
+    FACTORY:any | null;
+    GERDA:any| null;
+    KRENDEL:any| null;
+    RTK:any | null;
+    PROFI:any | null;
 }
 
 const Cabinet: React.FC<cabinet_interface> = ({
@@ -47,6 +47,11 @@ const Cabinet: React.FC<cabinet_interface> = ({
         set_PROFI_balance(Number(_PROFI_balance) / 10**6);
     }
 
+    const buy_token = async () => {
+        const tx = await GERDA?.connect(signer).buy_token({value:"1000000000000000000"});
+        await tx.wait(1);
+    }
+
     useEffect(() => {
         get_info_cabinet()
     },[signer,provider,FACTORY,GERDA,KRENDEL,RTK,PROFI])
@@ -68,6 +73,14 @@ const Cabinet: React.FC<cabinet_interface> = ({
                     <p>RTK: {RTK_balance}</p>
                     <p>PROFI: {PROFI_balance}</p>
                     
+                    <div>
+                        <h4>Покупка валюты</h4>
+                        <button onClick={() => buy_token()}>GERDA</button>
+                        <button>KRENDEL</button>
+                        <button>RTK</button>
+
+                        <h4>Staking..</h4>
+                    </div>
                 </div>
             ) : (
                 <p>Адрес аккаунта не найден. Пожалуйста, подключите кошелек.</p> 

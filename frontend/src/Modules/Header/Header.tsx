@@ -29,7 +29,6 @@ const Header: React.FC<Connect_interface> = ({signer,setSigner,provider,setProvi
         <ul>
           <ConnectWallet signer={signer} setSigner={setSigner} provider={provider} setProvider={setProvider}/>
           <li><a href="/">Главная</a></li>
-          <li><a href="/about">О Нас</a></li>
           {signer && <li><a href="/cabinet">Личный кабинет</a></li>}
         </ul>
       </nav>
