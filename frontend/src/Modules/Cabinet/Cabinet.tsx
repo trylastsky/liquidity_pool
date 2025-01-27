@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import './Cabinet.css';
 import { ethers } from 'ethers';
@@ -48,9 +49,14 @@ const Cabinet: React.FC<cabinet_interface> = ({
         set_PROFI_balance(Number(_PROFI_balance) / 10**6);
     }
 
-    const buy_token = async () => {
-        const tx = await GERDA?.connect(signer).buy_token({value:"1000000000000000000"});
-        await tx.wait(1);
+    const buy_token = async (contract:any) => {
+        const prompt_value = window.prompt("Введите число токенов которое хотите купить");
+        const decimals = await contract._decimals();
+        const value = ethers.parseUnits(prompt_value, decimals);
+        if(value) {
+            const tx = await contract?.connect(signer).buy_token({value: value });
+            await tx.wait(1);
+        }
     }
 
     useEffect(() => {
@@ -76,9 +82,9 @@ const Cabinet: React.FC<cabinet_interface> = ({
                     
                     <div>
                         <h4>Покупка валюты</h4>
-                        <button onClick={() => buy_token()}>GERDA</button>
-                        <button>KRENDEL</button>
-                        <button>RTK</button>
+                        <button onClick={() => buy_token(GERDA)}>GERDA</button>
+                        <button onClick={() => buy_token(KRENDEL)}>KRENDEL</button>
+                        <button onClick={() => buy_token(RTK)}>RTK</button>
 
                         <h4>Staking..</h4>
                     </div>

@@ -1,38 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import './HomePage.css'; 
 import ExchangeModal from './ExchangeModal/ExchangeModal';
 import { liquidity_pool } from '../../global'; //pool interface
 import { ethers, toNumber } from 'ethers';
 
-// const pools = [
-//     {
-//         id: 1,
-//         name: 'GERDA-KRENDEL',
-//         description: 'Обмен между GERDA и KRENDEL. Вы можете обменивать ваши токены по курсу 1:1.',
-//         rate: '1 GERDA = 1 KRENDEL',
-//         priceFrom: '30 ETH (GERDA)',
-//         priceTo: '30 ETH (KRENDEL)',
-//         tokens: ['GERDA', 'KRENDEL'] // Доступные токены для обмена
-//     },
-//     {
-//         id: 2,
-//         name: 'KRENDEL-RTK',
-//         description: 'Обмен между KRENDEL и RTK. Вы можете обменивать токены по курсу 1:1.',
-//         rate: '1 KRENDEL = 1 RTK',
-//         priceFrom: '50 ETH (KRENDEL)',
-//         priceTo: '50 ETH (RTK)',
-//         tokens: ['KRENDEL', 'RTK'] // Доступные токены для обмена
-//     },
-//     {
-//         id: 3,
-//         name: 'LP-RTK',
-//         description: 'Обмен между LP и RTK. Вы можете обменивать токены по курсу 1:1.',
-//         rate: '1 LP = 1 RTK',
-//         priceFrom: '40 ETH (LP)',
-//         priceTo: '40 ETH (RTK)',
-//         tokens: ['LP', 'RTK'] // Доступные токены для обмена
-//     }
-// ];
 
 interface home_page_interface {
     pools_contracts: any[] | null; //массив контрактов пулов
@@ -73,6 +45,7 @@ const HomePage: React.FC<home_page_interface> = ({pools_contracts, provider, FAC
                     pool.address_pool = _pool_info[0];
                     pool.type = _pool_info[1];
                     pool.owner_pool_address = _pool_info[2];
+                    pool.owner_pool_name = await FACTORY?.user(_pool_info[2]);
                     pool.token1_address = _pool_info[3];
                     pool.token2_address = _pool_info[4];
                     pool.token1_reserve = _pool_info[5];
@@ -101,7 +74,7 @@ const HomePage: React.FC<home_page_interface> = ({pools_contracts, provider, FAC
                         <p>{pool.type}</p>
                         <p><strong>Соотношение:</strong> {toNumber(pool.token1_reserve) / 10 **12 + pool.type.split("-")[0] + " на "
                          + toNumber(pool.token2_reserve) / 10**12 + pool.type.split("-")[1]}</p>
-                         <p><strong>Владелец {}</strong></p>
+                         <p><strong>Владелец {pool.owner_pool_name}</strong></p>
                         <button className='exchangeButton' onClick={() => handleOpenModal(pool)}>Обменять</button>
                     </div>
                 )) : (<>

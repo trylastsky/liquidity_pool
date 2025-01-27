@@ -1,9 +1,7 @@
-import { Uint } from "web3";
-
 declare global { //задаем глобальный тип
 
   interface Window { //разрешаем метамаску быть провайдером XD
-  ethereum: any
+  ethereum;
 }
 
 }
@@ -24,6 +22,7 @@ export interface liquidity_pool {
   address_pool: string;
   type: string;
   owner_pool_address:string;
+  owner_pool_name:string;
   token1_address:string;
   token2_address:string;
   token1_reserve:number;
