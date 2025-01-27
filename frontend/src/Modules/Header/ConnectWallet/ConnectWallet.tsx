@@ -29,9 +29,7 @@ const ConnectWallet: React.FC<Connect_interface> = ({
         if(_signer) {
             setSigner(JSON.parse(_signer));
         }
-        else {
-            console.log('ебал твою мамашу')
-        }
+
     }
 
     const connect_wallet = async () => {

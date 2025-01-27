@@ -30,7 +30,8 @@ const Cabinet: React.FC<cabinet_interface> = ({
     const [error, setError] = useState<string | null>(null); 
 
     const get_info_cabinet = async () => {
-        const _user = await FACTORY?.authorization_user(); //получение имени пользователя
+        const _user = await FACTORY?.user(signer.address); //получение имени пользователя
+        
         const _WEI_balance = await provider?.getBalance(signer.address);
         const _GERDA_balance = await GERDA?.balanceOf(signer.address);
         const _KRENDEL_balance = await KRENDEL?.balanceOf(signer.address);
@@ -39,7 +40,7 @@ const Cabinet: React.FC<cabinet_interface> = ({
 
         console.log(_user)
         
-        set_user_name(_user[0]);
+        set_user_name(_user);
         set_ETH_balance(Number(_WEI_balance) / 10**18); //ethers.formatEther () - барахлит
         set_GERDA_balance(Number(_GERDA_balance) / 10**12);
         set_KRENDEL_balance(Number(_KRENDEL_balance) / 10**12);
