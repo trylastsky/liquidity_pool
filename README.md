@@ -22,18 +22,18 @@ Liquidity Pool - это проект, разработанный для упра
 
 1. Перейдите в корневую директорию проекта и выполните следующие команды:
 
-   cd backend/
-   npm install
-   npx hardhat clean
-   npx hardhat node
+   ```cd backend/```
+   ```npm install```
+   ```npx hardhat clean```
+   ```npx hardhat node```
 
 2. Откройте новый терминал и выполните следующие команды:
 
-   cd backend/
-   npx hardhat run --network localhost deploy.js
-   cd ../frontend
-   npm install
-   npm run dev
+   ```cd backend/```
+   ```npx hardhat run --network localhost deploy.js```
+   ```cd ../frontend```
+   ```npm install```
+  ```npm run dev```
 
 ---
 
