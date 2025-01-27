@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 
 function logger(message) {
-    // console.clear();
+    console.clear();
     console.log(message);
 }
 
