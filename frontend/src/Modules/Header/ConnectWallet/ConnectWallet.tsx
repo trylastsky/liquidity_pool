@@ -24,37 +24,37 @@ const ConnectWallet: React.FC<Connect_interface> = ({
         }
     }
 
-    const check_signer_of_memory = () => { //достает данные из сесии пользователя при перезагрузке (signer)
-        const _signer = localStorage.getItem('signer');
-        if(_signer) {
-            setSigner(JSON.parse(_signer));
-        }
-
-    }
+ 
 
     const connect_wallet = async () => {
         const signer = await provider.getSigner(); 
         setSigner(signer); 
-        localStorage.setItem('signer', JSON.stringify(signer));
+        localStorage.setItem('status_auth', JSON.stringify(true));
+    }
+
+    const check_status_auth = () => { //проверка совершен ли вход пользователем
+        const _status_auth = localStorage.getItem('status_auth');
+        if(_status_auth) {
+            connect_wallet(); //если сессия была то подключаем снова
+        }
     }
 
     const disconnect_wallet = () => { 
         const confirm = window.confirm("Вы точно хотите выйти из аккаунта?"); 
         if (confirm) { 
             setSigner(null); 
-            localStorage.removeItem('signer');
+            localStorage.removeItem('status_auth');
         }
     }
 
 
     useEffect(() => { //для вызова стартовых функций при рендеринге страницы
         init_provider();
-        check_signer_of_memory();
     }, []);
 
     useEffect(() => { //для событий 
         if (!window.ethereum) return; //отменяем выполнение useEffect если нет Metamask;
-
+        check_status_auth();//проверка сессии
         window.ethereum?.on('accountsChanged', connect_wallet); //смена аккаунта в кошельке
     
         return () => {    //размонтирование событий после размонтирования компонента
