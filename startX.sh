@@ -13,4 +13,7 @@ npx hardhat run --network localhost ./deploy.js
 sleep 5;
 
 cd ../frontend
+
+npm i
+
 npm run dev

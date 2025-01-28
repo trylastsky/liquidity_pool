@@ -72,7 +72,9 @@ const HomePage: React.FC<home_page_interface> = ({pools_contracts, provider, FAC
                     <div key={pool.id} className='poolCard'>
                         <h2>{pool.type}</h2>
                         <p>{pool.type}</p>
-                        <p><strong>Соотношение:</strong> {toNumber(pool.token1_reserve) / 10 **12 + pool.type.split("-")[0] + " на "
+                        <p><strong>Соотношение ETH:</strong> {(toNumber(pool.token1_reserve) / 10 **12)+ pool.type.split("-")[0] + " на "
+                         + toNumber(pool.token2_reserve) / 10**12 + pool.type.split("-")[1]}</p>
+                        <p><strong>Соотношение Токенов:</strong> {toNumber(pool.token1_reserve) / 10 **12 + pool.type.split("-")[0] + " на "
                          + toNumber(pool.token2_reserve) / 10**12 + pool.type.split("-")[1]}</p>
                          <p><strong>Владелец {pool.owner_pool_name}</strong></p>
                         <button className='exchangeButton' onClick={() => handleOpenModal(pool)}>Обменять</button>

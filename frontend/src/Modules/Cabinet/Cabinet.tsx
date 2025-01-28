@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import './Cabinet.css';
+import buy_token from '../../services/token/buy_token';
+import set_stake from '../../services/staking/set_stake';
 import { ethers } from 'ethers';
+import get_RW from '../../services/staking/get_RW';
 
 interface cabinet_interface {
     signer:any | null;
@@ -11,6 +14,7 @@ interface cabinet_interface {
     KRENDEL:any| null;
     RTK:any | null;
     PROFI:any | null;
+    STAKING:any | null;
 }
 
 const Cabinet: React.FC<cabinet_interface> = ({
@@ -20,7 +24,8 @@ const Cabinet: React.FC<cabinet_interface> = ({
     GERDA,
     KRENDEL,
     RTK,
-    PROFI
+    PROFI,
+    STAKING
     }) => {
     const [user_name, set_user_name] = useState<string>();
     const [ETH_balance, set_ETH_balance] = useState<number>(0);
@@ -28,7 +33,6 @@ const Cabinet: React.FC<cabinet_interface> = ({
     const [KRENDEL_balance, set_KRENDEL_balance] = useState<number>(0);
     const [RTK_balance, set_RTK_balance] = useState<number>(0);
     const [PROFI_balance, set_PROFI_balance] = useState<number>(0);
-    const [error, setError] = useState<string | null>(null); 
 
     const get_info_cabinet = async () => {
         const _user = await FACTORY?.user(signer.address); //получение имени пользователя
@@ -38,8 +42,6 @@ const Cabinet: React.FC<cabinet_interface> = ({
         const _KRENDEL_balance = await KRENDEL?.balanceOf(signer.address);
         const _RTK_balance = await RTK?.balanceOf(signer.address);
         const _PROFI_balance = await PROFI?.balanceOf(signer.address);
-
-        console.log(_user)
         
         set_user_name(_user);
         set_ETH_balance(Number(_WEI_balance) / 10**18); //ethers.formatEther () - барахлит
@@ -49,15 +51,6 @@ const Cabinet: React.FC<cabinet_interface> = ({
         set_PROFI_balance(Number(_PROFI_balance) / 10**6);
     }
 
-    const buy_token = async (contract:any) => {
-        const prompt_value = window.prompt("Введите число токенов которое хотите купить");
-        const decimals = await contract._decimals();
-        const value = ethers.parseUnits(prompt_value, decimals);
-        if(value) {
-            const tx = await contract?.connect(signer).buy_token({value: value });
-            await tx.wait(1);
-        }
-    }
 
     useEffect(() => {
         get_info_cabinet()
@@ -67,7 +60,6 @@ const Cabinet: React.FC<cabinet_interface> = ({
     return (
         <div className="cabinet-container">
             <h2>Личный кабинет</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>} 
 
             {signer ? (
                 <div>
@@ -78,15 +70,15 @@ const Cabinet: React.FC<cabinet_interface> = ({
                     <p>GERDA: {GERDA_balance}</p>
                     <p>KRENDEL: {KRENDEL_balance}</p>
                     <p>RTK: {RTK_balance}</p>
-                    <p>PROFI: {PROFI_balance}</p>
-                    
                     <div>
                         <h4>Покупка валюты</h4>
-                        <button onClick={() => buy_token(GERDA)}>GERDA</button>
-                        <button onClick={() => buy_token(KRENDEL)}>KRENDEL</button>
-                        <button onClick={() => buy_token(RTK)}>RTK</button>
-
-                        <h4>Staking..</h4>
+                        <button onClick={() => buy_token(signer, GERDA, set_GERDA_balance)}>GERDA</button>
+                        <button onClick={() => buy_token(signer, KRENDEL, set_KRENDEL_balance)}>KRENDEL</button>
+                        <button onClick={() => buy_token(signer, RTK, set_RTK_balance)}>RTK</button>
+                        <h4>Staking</h4>
+                        <p>Баланс PROFI: {PROFI_balance}</p>
+                        <button onClick={() => set_stake(signer, STAKING)}>Запуск стэйкинга</button>
+                        <button onClick={() => get_RW(signer, STAKING)}>Получить вознаграждение</button>
                     </div>
                 </div>
             ) : (

@@ -91,6 +91,7 @@ const App: React.FC = () => {
                     KRENDEL = {KRENDEL_contract}
                     RTK = {RTK_contract}
                     PROFI = {PROFI_contract}
+                    STAKING = {STAKING_contract}
                     />} />
                 </Routes>
             </div>
