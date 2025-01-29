@@ -6,17 +6,10 @@ import "./Pool.sol";
 contract Factory { //контракт из которого производится деплой всех пулов и хранение информации об них
     Pool[] public  pools; //массив всех пулов
 
-    struct UserPool {
-        uint Id;
-        Pool userPool;
-    }
+  
 
-    struct User {
-        string Name;
-        UserPool[] Pools;
-    }
-
-    mapping (address => User) public user;//маппинг пользователя
+    mapping (address => string) public user_name;//маппинг пользователя
+    mapping (address => Pool[]) public user_pools;//пулы пользователя
     mapping (address => bool) private user_status_registration; //статус регистрации пользователя
 
     function deploy_pool( //функция деплоя пула
@@ -36,7 +29,7 @@ contract Factory { //контракт из которого производит
             owner //адресс владельца пула
         );
         pools.push(new_pool); //добавление обьекта пула в общий массив пулов
-        user[owner].Pools.push(UserPool(pools.length, new_pool)); 
+        user_pools[owner].push(new_pool); 
         return new_pool;
     }
 
@@ -44,15 +37,15 @@ contract Factory { //контракт из которого производит
         return pools;
     }
 
-    function authorization_user() public view returns(User memory) {
+    function authorization_user() public view returns(string memory) {
         require(user_status_registration[msg.sender] == true, "this user is not registred");
-        return user[msg.sender];
+        return user_name[msg.sender];
     }
 
-    function registration_user(string memory user_name, address user_address) public {
+    function registration_user(string memory _user_name, address user_address) public {
         require(user_address != address(0), "incorrect address");
         require(user_status_registration[user_address] == false, "user already registred");
         user_status_registration[user_address] = true; //already registred
-        user[user_address].Name = user_name; //обьявление имени
+        user_name[user_address] = _user_name; //обьявление имени
     }
 }

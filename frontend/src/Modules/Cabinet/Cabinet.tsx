@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './Cabinet.css';
 import buy_token from '../../services/token/buy_token';
 import set_stake from '../../services/staking/set_stake';
-import { ethers } from 'ethers';
 import get_RW from '../../services/staking/get_RW';
+import transfer_from from '../../services/token/transfer_from';
+import { ethers } from 'ethers';
 
 interface cabinet_interface {
     signer:any | null;
@@ -27,7 +28,8 @@ const Cabinet: React.FC<cabinet_interface> = ({
     PROFI,
     STAKING
     }) => {
-    const [user_name, set_user_name] = useState<string>();
+    const [user_name, set_user_name] = useState<string>("username");
+    // const [user_pools, set_user_pools] = useState<string[]| null>(null);
     const [ETH_balance, set_ETH_balance] = useState<number>(0);
     const [GERDA_balance, set_GERDA_balance] = useState<number>(0);
     const [KRENDEL_balance, set_KRENDEL_balance] = useState<number>(0);
@@ -35,22 +37,23 @@ const Cabinet: React.FC<cabinet_interface> = ({
     const [PROFI_balance, set_PROFI_balance] = useState<number>(0);
 
     const get_info_cabinet = async () => {
-        const _user = await FACTORY?.user(signer.address); //получение имени пользователя
-        
+        const _user_name = await FACTORY?.user_name(signer.address); //получение имени пользователя
+        // const _user_pools = await FACTORY?.user_pools(signer.address);
         const _WEI_balance = await provider?.getBalance(signer.address);
         const _GERDA_balance = await GERDA?.balanceOf(signer.address);
         const _KRENDEL_balance = await KRENDEL?.balanceOf(signer.address);
         const _RTK_balance = await RTK?.balanceOf(signer.address);
         const _PROFI_balance = await PROFI?.balanceOf(signer.address);
-        
-        set_user_name(_user);
+
+        set_user_name(_user_name);
+        // set_user_pools(_user_pools);
         set_ETH_balance(Number(_WEI_balance) / 10**18); //ethers.formatEther () - барахлит
         set_GERDA_balance(Number(_GERDA_balance) / 10**12);
         set_KRENDEL_balance(Number(_KRENDEL_balance) / 10**12);
         set_RTK_balance(Number(_RTK_balance) /10**12);
-        set_PROFI_balance(Number(_PROFI_balance) / 10**6);
+        set_PROFI_balance(Number(_PROFI_balance) / 10**12);
     }
-
+    
 
     useEffect(() => {
         get_info_cabinet()
@@ -71,10 +74,15 @@ const Cabinet: React.FC<cabinet_interface> = ({
                     <p>KRENDEL: {KRENDEL_balance}</p>
                     <p>RTK: {RTK_balance}</p>
                     <div>
-                        <h4>Покупка валюты</h4>
+                        <h4>Управление токенами</h4>
+                        <h6>Покупка валюты</h6>
                         <button onClick={() => buy_token(signer, GERDA, set_GERDA_balance)}>GERDA</button>
                         <button onClick={() => buy_token(signer, KRENDEL, set_KRENDEL_balance)}>KRENDEL</button>
                         <button onClick={() => buy_token(signer, RTK, set_RTK_balance)}>RTK</button>
+                        <h6>Перевод валюты на другой счет</h6>
+                        <button onClick={() => transfer_from(signer, GERDA, set_GERDA_balance)}>GERDA</button>
+                        <button onClick={() => transfer_from(signer, KRENDEL, set_KRENDEL_balance)}>KRENDEL</button>
+                        <button onClick={() => transfer_from(signer, RTK, set_RTK_balance)}>RTK</button>
                         <h4>Staking</h4>
                         <p>Баланс PROFI: {PROFI_balance}</p>
                         <button onClick={() => set_stake(signer, STAKING)}>Запуск стэйкинга</button>

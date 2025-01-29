@@ -61,9 +61,9 @@ contract Pool {
 
     function add_liquidity(uint _amount, Token token) public { //функция добавления токена в пул
         require(_amount > 0, "You need send min 1 or more tokens"); //внести можно не меньше 1 токена
-        uint amount_profi = _amount * token.PRICE() / PROFI.PRICE(); //вычисляем сколько Profi получит пользователь за добавление активов в пул
+        uint amount_profi = ((_amount / token._decimals()) * token.PRICE()) / PROFI.PRICE(); //вычисляем сколько Profi получит пользователь за добавление активов в пул
         token.transferFrom(msg.sender, address(this), _amount); //переводим токены от пользователя на счет пула
-        PROFI.Mint(owner, msg.sender, amount_profi); //выпускаем токены LP в расчете из amount_profi
+        PROFI.mint(msg.sender, amount_profi); //выпускаем токены LP в расчете из amount_profi
     }
 
     function getInfo() public view returns (Info memory) {

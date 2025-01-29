@@ -70,7 +70,7 @@ async function deploy() { //деплой смарт контракта
         "Professional", 
         "PROFI",
         0,
-        6,
+        12,
         60,
         owner
     )

@@ -1,83 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import './ExchangeModal.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from "react";
+import swap_token from "../../../services/pool/swap_token";
+import "./ExchangeModal.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
+import { ethers } from "ethers";
 
-interface ExchangeModalProps {
+interface modal_props {
+    signer: any;
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (fromToken: string, toToken: string, amount: number) => void;
-    pool:any;
-    pool_contract:any;
+    pool_info: any;
+    pool_contract: any;
 }
 
-const ExchangeModal: React.FC<ExchangeModalProps> = ({ isOpen, onClose,pool,pool_contract}) => {
-    
-    const [amount, setAmount] = useState<number>(0);
+interface target_token_interface {
+    sending_token: string | null;
+    received_token: string | null;
+}
+
+const ExchangeModal: React.FC<modal_props> = ({
+    signer,
+    isOpen,
+    onClose,
+    pool_info,
+    pool_contract,
+}) => {
+    const [amount, set_amount] = useState<number>(0);
+    const [target_token, set_token_target] = useState<target_token_interface>({sending_token:pool_info.token1_address,received_token: pool_info.token2_address}); //смена типа токенов
     const [result, setResult] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-    const swap_token = async (
-        _amount:number,
-        sended_token_address:string,
-        received_token_address:string
-    ) => {
-        const response = await pool_contract.swap_token(_amount, sended_token_address, received_token_address);
-        console.log(response);
-    }
 
     const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
 
-        if (value === '' || isNaN(Number(value)) || Number(value) < 0) {
+        if (value === "" || isNaN(Number(value)) || Number(value) < 0) {
             setError("Пожалуйста, введите корректное число.");
-            setAmount(0);
+            set_amount(0);
             setResult(null);
         } else {
             setError(null);
-            const amountValue = parseFloat(value);
-            setAmount(amountValue);
+            set_amount(Number(value));
         }
     };
 
+    const handle_token_swap = () => {
+        //смена обмениваемых токенов
+        const new_token_target: target_token_interface = {
+            sending_token: target_token?.received_token,
+            received_token: target_token?.sending_token,
+        };
+        set_token_target(new_token_target);
+    };
 
-
-
-
-    return (
-        isOpen ? (
-            <div className="modalOverlay">
-                <div className="modalContent">
-                    <h2>Обмен токенов</h2>
-                    {result == null && (<>
-                        <p>Введите число для обмена <strong>{pool.type.split('-')[0]}</strong> на <strong>{pool.type.split('-')[1]}</strong></p>
-                    </>)}
-                    {amount > 0 && result !== null && (
-                        <p><strong>{amount} {}</strong> на <strong>{result.toFixed(2)} </strong></p>
-
-                    )}
-                    <label>
-                        Количество:
-                        <input type="number" value={amount > 0 ? amount : ''} onChange={handleAmountChange} />
-                    </label>
-                    {error && (
-                        <div className="errorPopup">{error}</div>
-                    )}
-                    <button 
-                        className="swapButton"
-                        
-                        title="Поменять"
+    return isOpen ? (
+        <div className="modalOverlay">
+            <div className="modalContent">
+                <h2>Обмен токенов</h2>
+                {result == null && (
+                    <>
+                        <p>
+                            Введите число для обмена{" "}
+                            <strong>
+                                {target_token?.sending_token ===
+                                pool_info.token1_address
+                                    ? pool_info.type.split("-")[0]
+                                    : pool_info.type.split("-")[1]}
+                            </strong>{" "}
+                            на{" "}
+                            <strong>
+                                {target_token?.received_token ===
+                                pool_info.token2_address
+                                    ? pool_info.type.split("-")[1]
+                                    : pool_info.type.split("-")[0]}
+                            </strong>
+                        </p>
+                    </>
+                )}
+                <label>
+                    Количество:
+                    <input
+                        type="number"
+                        value={amount > 0 ? amount : ""}
+                        onChange={handleAmountChange}
+                    />
+                </label>
+                {error && <div className="errorPopup">{error}</div>}
+                <button
+                    className="swapButton"
+                    title="Поменять"
+                    onClick={handle_token_swap}
+                >
+                    <FontAwesomeIcon icon={faExchangeAlt} />
+                </button>
+                <div className="modalButtons">
+                    <button
+                        onClick={() => {
+                            swap_token(
+                                signer,
+                                pool_contract,
+                                amount,
+                                target_token?.sending_token,
+                                target_token?.received_token
+                            );
+                        }}
                     >
-                        <FontAwesomeIcon icon={faExchangeAlt} />
+                        Подтвердить
                     </button>
-                    <div className="modalButtons">
-                        <button onClick={() => {swap_token(amount, pool.token1_address, pool.token2_address)}}>Подтвердить</button>
-                        <button onClick={onClose}>Отмена</button>
-                    </div>
+                    <button onClick={onClose}>Отмена</button>
                 </div>
             </div>
-        ) : null
-    );
+        </div>
+    ) : null;
 };
 
 export default ExchangeModal;

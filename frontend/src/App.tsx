@@ -79,9 +79,11 @@ const App: React.FC = () => {
             <div>
                 <Routes>
                     <Route path="/" element={<HomePage 
+                    signer={signer}
                     pools_contracts = {pools_contracts}
                     provider={provider}
                     FACTORY={FACTORY_contract}
+                    PROFI={PROFI_contract}
                     />} /> 
                     <Route path="/cabinet" element={<Cabinet
                     signer={signer}

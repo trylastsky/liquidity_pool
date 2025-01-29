@@ -4,8 +4,8 @@ import { ethers } from "ethers";
         try {
             const prompt_value = window.prompt("Какое количество PROFI вы хотите положить на счет стэйкинга?");
             if(prompt_value && !isNaN(Number(prompt_value))) {
-                const value = ethers.parseUnits(prompt_value, 10**6); //расчет сколько  PROFI отправится на счет смарт контракта
-                const tx = await contract?.connect(signer).set_stake({value:String(value)});
+                const value = ethers.parseUnits(prompt_value, 12); //расчет сколько  PROFI отправится на счет смарт контракта
+                const tx = await contract?.connect(signer).set_stake(Number(value));
                 await tx.wait();
                 alert(`Внесено ${prompt_value} PROFI`);
             }
@@ -13,8 +13,8 @@ import { ethers } from "ethers";
                 alert("Введите корректное число PROFI!");
             }
         }
-        catch(err) {
-            alert("На вашем счете недостаточно PROFI");
+        catch(err:any) {
+            alert(`На вашем счете недостаточно PROFI, код ошибки:${err.revert.args}`);
         }
     }
 

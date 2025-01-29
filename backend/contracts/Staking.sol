@@ -11,8 +11,9 @@ contract Staking {
     struct Info { //структура информации о стейкинге пользователя
         uint count_LP; //колво LP на стейкинге
         uint last_reward_time; //последнее время вознаграждения
-        uint reward_per_second; //ставка вознагрождения в секунду 
     }
+
+    uint REWARD_SECOND = 13;
 
     mapping (address => Info) public user_stake_info; //мапинг где мы храним информацию о стейкинге пользователя
 
@@ -32,7 +33,6 @@ contract Staking {
         Info storage info = user_stake_info[msg.sender]; //приведение типов из значения user_stake_info
 
         info.count_LP += amount; //колво LP на счету = кол-ву внесенных LP на стейкинг
-        info.reward_per_second = 1; //колво lp в секунду
         PROFI.transferFrom(msg.sender, address(this), amount); //перевод LP токенов от пользователя на стейкинг счет
     }
 
@@ -43,13 +43,13 @@ contract Staking {
         Info storage info = user_stake_info[msg.sender]; //приведение типов user_stake_info
         //формула получения вознаграждения из ТЗ
         uint one = block.timestamp - info.last_reward_time;
-        uint two = (info.count_LP / PROFI.balanceOf(address(this)) + 1e6) / 1e6;
+        uint two = (info.count_LP / PROFI.balanceOf(address(this))) / 1e12;
 
-        uint two_in_tree = ((one / (30 days)) * 5e4 + 1e6) / 1e6;
+        uint two_in_tree = ((one / (30 days)) * 5e4 * 1e12) / 1e12;
 
-        uint rw = (info.count_LP / 1e6) * one * info.reward_per_second * two * two_in_tree; // финальная сумма которую получит user
+        uint reward = (info.count_LP / 1e12) * one * REWARD_SECOND * two * two_in_tree; // финальная сумма которую получит user
 
         info.last_reward_time = block.timestamp;
-        PROFI.Mint(Owner, msg.sender, rw); //выпускаем монеты и отдаем их как награду пользователю
+        PROFI.mint(msg.sender,reward); //выпускаем монеты и отдаем их как награду пользователю
     }
 }
