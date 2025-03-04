@@ -153,8 +153,7 @@ async function deploy() { //деплой смарт контракта
     
     const Staking = await ethers.getContractFactory("Staking")
     const staking = await Staking.deploy(
-        Professional.target,
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        Professional.target
     )
 
     const staking_ = path.join(__dirname, "./artifacts/contracts/Staking.sol/Staking.json")

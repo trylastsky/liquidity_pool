@@ -1,6 +1,6 @@
 cd backend
 
-npm install
+npm i
 
 npx hardhat clean
 

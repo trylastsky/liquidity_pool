@@ -5,7 +5,7 @@ import { ethers } from "ethers";
             const prompt_value = window.prompt("Какое количество PROFI вы хотите положить на счет стэйкинга?");
             if(prompt_value && !isNaN(Number(prompt_value))) {
                 const value = ethers.parseUnits(prompt_value, 12); //расчет сколько  PROFI отправится на счет смарт контракта
-                const tx = await contract?.connect(signer).set_stake(Number(value));
+                const tx = await contract?.connect(signer).stake(Number(value));
                 await tx.wait();
                 alert(`Внесено ${prompt_value} PROFI`);
             }

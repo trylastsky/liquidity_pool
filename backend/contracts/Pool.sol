@@ -60,11 +60,20 @@ contract Pool {
 }
 
     function add_liquidity(uint _amount, Token token) public { //функция добавления токена в пул
-        require(_amount > 0, "You need send min 1 or more tokens"); //внести можно не меньше 1 токена
-        uint amount_profi = ((_amount / token._decimals()) * token.PRICE()) / PROFI.PRICE(); //вычисляем сколько Profi получит пользователь за добавление активов в пул
-        token.transferFrom(msg.sender, address(this), _amount); //переводим токены от пользователя на счет пула
-        PROFI.mint(msg.sender, amount_profi); //выпускаем токены LP в расчете из amount_profi
-    }
+    require(_amount > 0, "You need send min 1 or more tokens");
+
+    // Получаем цену токена в wei, учитывая десятичные значения
+    uint256 tokenPrice = token.PRICE(); // Цена токена
+    uint256 profiPrice = PROFI.PRICE(); // Цена Profi
+
+    // Учитываем, что токен может иметь различное количество десятичных знаков
+    // Переменная token._decimals() должна возвращать количество десятичных знаков токена
+    uint256 amount_profi = (_amount * tokenPrice) / profiPrice; 
+    // Передаем токены от пользователя на счет пула
+    token.transferFrom(msg.sender, address(this), _amount);    
+    // Выпускаем токены LP в расчете из amount_profi
+    PROFI.mint(msg.sender, amount_profi);
+}
 
     function getInfo() public view returns (Info memory) {
         return Info(

@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 const add_liquidity = async (signer:any, contract:any, sending_token_contract:any) => {
         try {
             const prompt_value:string|null = window.prompt("Введите число токенов которое хотите добавить в ликвидность"); //prompt value значение из input alert
@@ -7,7 +9,6 @@ const add_liquidity = async (signer:any, contract:any, sending_token_contract:an
                 const tx = await contract?.connect(signer).add_liquidity(Number(value), sending_token_contract); //транзакция call покупка токена значение должно быть строкой
                 await tx.wait(); //ожидаем подтверждение транзакции
                 alert(`Успешная транзакция!`);
-                get_pools();
             }
             else { //если prompt_value не прошло проверку
                 alert("Введите коректное значение");

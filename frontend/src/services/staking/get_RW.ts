@@ -1,6 +1,6 @@
 const get_RW = async (signer:any,contract:any) => {
     try {
-        const tx = await contract?.connect(signer).get_RW();
+        const tx = await contract?.connect(signer).claimReward();
         await tx.wait();
         alert(`Награда получена`);
     }

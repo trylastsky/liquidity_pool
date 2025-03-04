@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './Modules/Header/Header';
 import Footer from './Modules/Footer/Footer';
@@ -60,7 +60,7 @@ const App: React.FC = () => {
         }
     }
 
-    useEffect(() => { //инициализация
+    useLayoutEffect(() => { //инициализация
         init_contracts();
     },[provider])
 
